@@ -9,22 +9,20 @@ a learning tool to learn hardware description and MyHDL.
 First, clone the repository and run the ipython notebook in the 
 cloned workspace:
 
-    >> git clone https://bitbucket.org/cfelton/mex
-    >> cd mex
+    >> git clone https://github.com/cfelton/myhdl_exercises
+    >> cd myhdl_exercises
     >> ipython notebook
     
-Next, to run the exercises the *myhdl* and *myhdl_tools* packages 
+Next, to run the exercises the *myhdl* and ~myhdl_tools~ packages 
 are required.  If the above cell did not execute without error the 
 packages need to be retrieved and the notebook kernel restarted.  
 Both packages can be installed via *pypi*:
 
     >> pip install myhdl
-    >> pip install myhdl_tools
-    
+
 Or the latest can be retrieved from:
 
     >> git clone https://github.com/jandecaluwe/myhdl
-    >> hg clone https://bitbucket.org/cfelton/myhdl_tools
     
 To start IPython see the [directions here]()
 
