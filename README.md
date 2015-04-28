@@ -41,6 +41,16 @@ working correctly or not.
 0. Defining a hardware module.  This exercise defines a basic
    shift register  [01_mex_shifty]
 
-0. Interfaces
+0. GCD
+
+0. Interfaces (small example)
+
+0. Tests
+
+0. More tests
+
+0. Gearbox (solve problem once)
+
+0. Mandelbrot
 
 
