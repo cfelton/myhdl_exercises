@@ -4,11 +4,10 @@ from __future__ import print_function
 
 import os
 from random import randint
-
 from myhdl import *
-from myhdl_tools import Clock, Reset
+from support import Clock, Reset
+# from _z01 import m_shifty
 
-from _z01 import m_shifty
 
 def test(mod):
     clock = Clock(0)
@@ -22,7 +21,7 @@ def test(mod):
         tbdut = mod(clock, reset, load, lval, obit, ival=ival)
         tbclk = clock.gen()
 
-        log = [(-1,0,0,0,0,) for _ in range(20)]
+        log = [(-1, 0, 0, 0, 0,) for _ in range(20)]
         isht = Signal(intbv(0, max=256, min=0))
 
         @always(clock.posedge)
@@ -37,7 +36,7 @@ def test(mod):
                 yield reset.pulse(10)
                 yield clock.posedge
 
-                for ii in xrange(1000):
+                for ii in range(1000):
                     assert isht[7] == obit
                     isht.next = concat(isht[6:0], isht[7])
                     yield clock.posedge
@@ -56,7 +55,7 @@ def test(mod):
                         yield clock.posedge
                         
                 print("Test Successful")
-            except Exception, err:
+            except Exception as err:
                 yield delay(10)
                 print("Test Error")
                 print("Last %d clock cycles" % (len(log)))
@@ -69,6 +68,9 @@ def test(mod):
 
         return tbclk, tbdut, tbstim, tbmon
 
+    if not os.path.isdir('vcd'):
+        os.makedirs('vcd')
+
     traceSignals.name = 'vcd/01_mex'
     if os.path.isfile(traceSignals.name+'.vcd'):
         os.remove(traceSignals.name+'.vcd')
@@ -77,5 +79,6 @@ def test(mod):
     toVHDL(mod, clock, reset, load, lval, obit, ival=ival)
     toVerilog(mod, clock, reset, load, lval, obit, ival=ival)
 
+
 if __name__ == '__main__':
-    test(m_shifty)
+    pass  # test(m_shifty)
