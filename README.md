@@ -13,7 +13,7 @@ cloned workspace:
     >> cd myhdl_exercises
     >> ipython notebook
     
-Next, to run the exercises the *myhdl* and ~myhdl_tools~ packages 
+Next, to run the exercises the *myhdl* and ~~myhdl_tools~~ packages 
 are required.  If the above cell did not execute without error the 
 packages need to be retrieved and the notebook kernel restarted.  
 Both packages can be installed via *pypi*:
