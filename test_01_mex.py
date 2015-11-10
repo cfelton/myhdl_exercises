@@ -6,7 +6,7 @@ import os
 from random import randint
 from myhdl import *
 from support import Clock, Reset
-# from _z01 import m_shifty
+from support import shifty
 
 
 def test(mod):
@@ -81,4 +81,4 @@ def test(mod):
 
 
 if __name__ == '__main__':
-    pass  # test(m_shifty)
+    test(shifty)
