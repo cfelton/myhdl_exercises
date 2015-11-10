@@ -49,8 +49,8 @@ working correctly or not.
 
 0. More tests
 
-0. ?? <!-- Gearbox (solve problem once) -->
+0. ?? 
 
-0. ?? <!-- Mandelbrot -->
+0. ??
 
 
