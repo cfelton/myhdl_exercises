@@ -12,11 +12,13 @@ cloned workspace:
     >> git clone https://github.com/cfelton/myhdl_exercises
     >> cd myhdl_exercises
     >> ipython notebook
+
+or
+
+    >> jupyter notebook
     
-Next, to run the exercises the *myhdl* and ~~myhdl_tools~~ packages 
-are required.  If the above cell did not execute without error the 
-packages need to be retrieved and the notebook kernel restarted.  
-Both packages can be installed via *pypi*:
+Next, to run the exercises the *myhdl* pacakge is required.  
+MyHDL can be installed via *pypi*:
 
     >> pip install myhdl
 
@@ -24,7 +26,7 @@ Or the latest can be retrieved from:
 
     >> git clone https://github.com/jandecaluwe/myhdl
     
-To start IPython see the [directions here]()
+To start IPython see the [directions here](http://jupyter-notebook-beginner-guide.readthedocs.org/en/latest/)
 
 Once the packages are installed open the first notebook and 
 verify all the cells can run.
