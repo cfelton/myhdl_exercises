@@ -2,14 +2,18 @@
 from __future__ import division
 from __future__ import print_function
 
-import os
 from random import randint
-from myhdl import *
+from myhdl import (Signal, intbv, always, instance, concat, 
+                   now, StopSimulation)
 from support import Clock, Reset
+from support import run_testbench
 from support import shifty
 
 
-def test(mod):
+def test(mod=None):
+    if mod is None:
+        mod = shifty
+
     clock = Clock(0)
     reset = Reset(0, active=0, async=True)
     load = Signal(bool(0))
@@ -17,8 +21,10 @@ def test(mod):
     obit = Signal(bool(0))
     ival = randint(0, lval.max-1)
 
-    def _test():
-        tbdut = mod(clock, reset, load, lval, obit, ival=ival)
+    def _bench():
+        _bench.error = True
+        tbdut = mod(clock, reset, load, lval, obit, 
+                    initial_value=ival)
         tbclk = clock.gen()
 
         log = [(-1, 0, 0, 0, 0,) for _ in range(20)]
@@ -26,7 +32,7 @@ def test(mod):
 
         @always(clock.posedge)
         def tbmon():
-            log.append((now(), load, lval, obit, mod.y,))
+            log.append((now(), load, lval, obit, mod.shiftreg,))
             log.pop(0)
             
         @instance
@@ -49,35 +55,31 @@ def test(mod):
                     yield clock.posedge
                     load.next = False  
                     yield clock.posedge                  
-                    for ii in xrange(1000):
+                    for ii in range(1000):
                         assert isht[7] == obit
                         isht.next = concat(isht[6:0], isht[7])
                         yield clock.posedge
                         
+                _bench.error = False
                 print("Test Successful")
             except Exception as err:
                 yield delay(10)
                 print("Test Error")
                 print("Last %d clock cycles" % (len(log)))
-                print(" time    | load | lval | obit | shift (y)")
+                print(" time    | load | lval | obit | shiftreg")
                 for ee in log:
                     print("%8d | %4d | %04X | %4d | %04X" % ee)
+                _bench.error = True
                 print(err)
 
             raise StopSimulation
 
         return tbclk, tbdut, tbstim, tbmon
 
-    if not os.path.isdir('vcd'):
-        os.makedirs('vcd')
-
-    traceSignals.name = 'vcd/01_mex'
-    if os.path.isfile(traceSignals.name+'.vcd'):
-        os.remove(traceSignals.name+'.vcd')
-    
-    Simulation(traceSignals(_test)).run()
-    toVHDL(mod, clock, reset, load, lval, obit, ival=ival)
-    toVerilog(mod, clock, reset, load, lval, obit, ival=ival)
+    portmap = {"clock": clock, "reset": reset, "load": load,
+               "load_value": lval, "output_bit": obit, 
+               "initial_value": ival}
+    run_testbench(_bench, "01_mex", mod, portmap)
 
 
 if __name__ == '__main__':

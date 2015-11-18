@@ -1,7 +1,12 @@
 
 from __future__ import absolute_import
 
-from ._mysigs import Clock
-from ._mysigs import Reset
+from .mysigs import Clock
+from .mysigs import Reset
+from .utils import run_testbench
+from .utils import monitor 
+from .utils import dump_monitor_log
 
-from ._z01 import shifty
+# example solutions (verify the tests are correct)
+from .z01 import shifty
+from .z02 import gcd
