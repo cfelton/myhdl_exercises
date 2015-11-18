@@ -36,21 +36,21 @@ Other than the first exercise, each requires an HDL module to be
 defined and an existing test will verify if the HDL module is 
 working correctly or not.
 
-0. Getting started [00_mex_start_here]
+    0 Getting started [00_mex_start_here]
 
-0. Defining a hardware module.  This exercise defines a basic
-   shift register  [01_mex_shifty]
+    1 Defining a hardware module.  This exercise defines a basic
+      shift register  [01_mex_shifty]
 
-0. GCD
+    2 GCD [02_mex_gcd]
 
-0. Interfaces (small example)
+    3 Interfaces (small example)
 
-0. Tests
+    4 Tests
 
-0. More tests
+    5 More tests
 
-0. ?? 
+    0 ?? 
 
-0. ??
+    0 ??
 
 
