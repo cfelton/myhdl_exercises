@@ -1,5 +1,4 @@
 
-
 # Introduction
 This repository contains a collection of IPython notebooks
 with MyHDL exercises (mex).  These exercises can be used as 
