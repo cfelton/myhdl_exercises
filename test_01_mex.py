@@ -3,10 +3,13 @@ from __future__ import division
 from __future__ import print_function
 
 from random import randint
+from collections import OrderedDict as odict
+
 from myhdl import (Signal, intbv, always, instance, concat, 
-                   now, StopSimulation)
+                   now, delay, StopSimulation)
+
 from support import Clock, Reset
-from support import run_testbench
+from support import run_testbench, monitor, dump_monitor_log
 from support import shifty
 
 
@@ -20,20 +23,20 @@ def test(mod=None):
     lval = Signal(intbv(0, max=256, min=0))
     obit = Signal(bool(0))
     ival = randint(0, lval.max-1)
+    
+    sigs = odict()
+    sigs['load'], sigs['load_value'] = load, lval
+    sigs['output_bit'] = obit
 
     def _bench():
         _bench.error = True
         tbdut = mod(clock, reset, load, lval, obit, 
                     initial_value=ival)
+        sigs['shiftreg'] = mod.shiftreg
         tbclk = clock.gen()
+        tbmon = monitor(clock, sigs)
 
-        log = [(-1, 0, 0, 0, 0,) for _ in range(20)]
         isht = Signal(intbv(0, max=256, min=0))
-
-        @always(clock.posedge)
-        def tbmon():
-            log.append((now(), load, lval, obit, mod.shiftreg,))
-            log.pop(0)
             
         @instance
         def tbstim():
@@ -65,10 +68,7 @@ def test(mod=None):
             except Exception as err:
                 yield delay(10)
                 print("Test Error")
-                print("Last %d clock cycles" % (len(log)))
-                print(" time    | load | lval | obit | shiftreg")
-                for ee in log:
-                    print("%8d | %4d | %04X | %4d | %04X" % ee)
+                dump_monitor_log(format='hex')
                 _bench.error = True
                 print(err)
 

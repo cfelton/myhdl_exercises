@@ -4,6 +4,7 @@ from __future__ import print_function
 
 from random import randint
 import fractions
+from collections import OrderedDict as odict
 
 from myhdl import (Signal, intbv, always, instance, 
                    delay, StopSimulation)
@@ -24,11 +25,16 @@ def test(mod=None):
     start = Signal(bool(0))
     finished = Signal(bool(1))
     
+    sigs = odict()
+    sigs['a'], sigs['b'], sigs['c'] = a, b, c
+    sigs['start'] = start
+    sigs['finished'] = finished
+
     def _bench():
         _bench.error = True
         tbdut = mod(clock, reset, a, b, c, start, finished)
         tbclk = clock.gen()
-        tbmon = monitor(clock)
+        tbmon = monitor(clock, sigs)
 
         @instance
         def tbstim():

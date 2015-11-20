@@ -43,7 +43,7 @@ class Clock(myhdl.SignalType):
     def _set_hticks(self):
         # self._nts = self._convert_timescale(self._timescale)
         # self._hticks = int(round(self._period/self._nts))
-        self._hticks = 3
+        self._hticks = 5
 
     def _convert_timescale(self, ts):
         # @todo: need to complete this, ts is in the form
@@ -88,7 +88,3 @@ class Reset(myhdl.ResetSignal):
             self.next = not self.active
         else:
             raise ValueError("{} type not supported".format(type(delays)))
-        
-            
-
-

@@ -1,4 +1,6 @@
 
+from __future__ import print_function
+
 import os
 
 import myhdl
@@ -7,6 +9,7 @@ from myhdl import (Simulation, traceSignals, SignalType, always, now)
 
 # reference to the last monitor log
 _log = None
+_logmap = None
 
 
 def run_testbench(tbfunc, mexname='', dutmod=None, portmap=None):
@@ -38,8 +41,10 @@ def run_testbench(tbfunc, mexname='', dutmod=None, portmap=None):
         myhdl.toVerilog(dutmod, **portmap)
 
 
-def monitor(clock, **sigs):
-    global _log
+def monitor(clock, sigs):
+    global _log, _logmap    
+    assert isinstance(sigs, dict)
+
     logmap = sigs
     for name, sig in sigs.items():
       assert isinstance(sig, SignalType)  
@@ -52,11 +57,36 @@ def monitor(clock, **sigs):
         log.pop(0)
 
     _log = log
+    _logmap = logmap
+
     return monlog
 
 
-def dump_monitor_log():
-    global _log
-    log = _log
+def dump_monitor_log(format='int'):
+    global _log, _logmap
+    assert format in (None, 'hex', 'int')
+
+    log = [entry for entry in (_log) if entry[0] != -1]
     print("Last {} clock cycles".format(len(log)))
+
+    lognames = list(_logmap.keys())
+    logsigs = list(_logmap.values())
+
+    print(" sim step |", end="")
+    for nm in lognames:
+        more = ' ' if len(nm) <= 8 else '~'
+        print(" {:<8s}{} |".format(nm[:8], more), end="")
+    print(" ")
     
+    for en in log:
+        for ii, val in enumerate(en):
+            if ii == 0:
+                print(" {:<8d} |".format(en[0]), end="")
+            else:
+                if len(logsigs[ii-1]) == 1 or format == 'int':
+                    print(" {:8d}  |".format(val), end="")
+                else:
+                    print(" {:08X}  |".format(val), end="")
+        print(" ")
+        
+    return 
