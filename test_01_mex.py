@@ -20,53 +20,55 @@ def test(mod=None):
     clock = Clock(0)
     reset = Reset(0, active=0, async=True)
     load = Signal(bool(0))
-    lval = Signal(intbv(0, max=256, min=0))
-    obit = Signal(bool(0))
-    ival = randint(0, lval.max-1)
+    load_value = Signal(intbv(0, max=256, min=0))
+    output_bit = Signal(bool(0))
+    initial_value = randint(0, load_value.max-1)
     
     sigs = odict()
-    sigs['load'], sigs['load_value'] = load, lval
-    sigs['output_bit'] = obit
+    sigs['load'], sigs['load_value'] = load, load_value
+    sigs['output_bit'] = output_bit
 
     def _bench():
         _bench.error = True
-        tbdut = mod(clock, reset, load, lval, obit, 
-                    initial_value=ival)
+        tbdut = mod(clock, reset, load, load_value, output_bit, 
+                    initial_value=initial_value)
         sigs['shiftreg'] = mod.shiftreg
         tbclk = clock.gen()
         tbmon = monitor(clock, sigs)
 
-        isht = Signal(intbv(0, max=256, min=0))
+        expected_shift = Signal(intbv(0, max=256, min=0))
             
         @instance
         def tbstim():
             try:
-                isht.next = ival
+                expected_shift.next = initial_value
                 yield reset.pulse(10)
                 yield clock.posedge
 
                 for ii in range(1000):
-                    assert isht[7] == obit
-                    isht.next = concat(isht[6:0], isht[7])
+                    assert expected_shift[7] == output_bit
+                    expected_shift.next = concat(expected_shift[6:0],
+                                                 expected_shift[7])
                     yield clock.posedge
 
                 for ii in range(33):
-                    rr = randint(1, lval.max-1)
-                    lval.next = rr
+                    rr = randint(1, load_value.max-1)
+                    load_value.next = rr
                     load.next = True
-                    isht.next = rr
+                    expected_shift.next = rr
                     yield clock.posedge
                     load.next = False  
                     yield clock.posedge                  
                     for ii in range(1000):
-                        assert isht[7] == obit
-                        isht.next = concat(isht[6:0], isht[7])
+                        assert expected_shift[7] == output_bit
+                        expected_shift.next = concat(expected_shift[6:0], 
+                                                     expected_shift[7])
                         yield clock.posedge
                         
                 _bench.error = False
                 print("Test Successful")
             except Exception as err:
-                yield delay(10)
+                yield delay(10*5)
                 print("Test Error")
                 dump_monitor_log(format='hex')
                 _bench.error = True
@@ -77,8 +79,8 @@ def test(mod=None):
         return tbclk, tbdut, tbstim, tbmon
 
     portmap = {"clock": clock, "reset": reset, "load": load,
-               "load_value": lval, "output_bit": obit, 
-               "initial_value": ival}
+               "load_value": load_value, "output_bit": output_bit, 
+               "initial_value": initial_value}
     run_testbench(_bench, "01_mex", mod, portmap)
 
 
