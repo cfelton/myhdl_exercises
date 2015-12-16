@@ -14,7 +14,7 @@ def shifty(clock, reset, load, load_value,
         if load:
             shiftreg.next = load_value
         else:
-            shiftreg.next = concat(shiftreg[mb-1:0], shiftreg[mb]) 
+            shiftreg.next = concat(shiftreg[mb:0], shiftreg[mb]) 
 
     @always_comb
     def beh_assign():
