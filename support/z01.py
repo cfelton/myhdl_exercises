@@ -2,6 +2,7 @@
 
 from myhdl import *
 
+
 def shifty(clock, reset, load, load_value, 
            output_bit, initial_value=0):
     

@@ -38,7 +38,7 @@ def stimulator(mod=None):
         mod = shifty
 
     clock = Clock(0)
-    reset = Reset(0, active=0, async=True)
+    reset = Reset(1, active=1, async=True)
     load = Signal(bool(0))
     load_value = Signal(intbv(0, max=256, min=0))
     output_bit = Signal(bool(0))
@@ -58,9 +58,9 @@ def stimulator(mod=None):
         @instance
         def tbstim():
             timestart = now()
+            yield reset.pulse(10)
+            yield clock.posedge
             try:
-                yield reset.pulse(10)
-                yield clock.posedge
                 for _ in range(8):
                     yield clock.posedge
                 load_value.next = 0x01
@@ -93,7 +93,7 @@ def test(mod=None):
         mod = shifty
 
     clock = Clock(0)
-    reset = Reset(0, active=0, async=True)
+    reset = Reset(1, active=1, async=True)
     load = Signal(bool(0))
     load_value = Signal(intbv(0, max=256, min=0))
     output_bit = Signal(bool(0))
